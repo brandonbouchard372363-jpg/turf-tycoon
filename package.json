@@ -1,0 +1,20 @@
+{
+  "name": "turf-tycoon",
+  "version": "1.0.0",
+  "description": "Turf Tycoon - a multiplayer property-trading board game for friends",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node engine.test.js && node socket.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "socket.io": "^4.8.0"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.0"
+  }
+}

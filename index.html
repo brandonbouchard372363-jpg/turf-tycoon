@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Turf Tycoon</title>
+  <meta name="description" content="Buy, build and brag. A multiplayer property-trading board game for friends.">
+  <meta name="theme-color" content="#121726">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%231B2036'/%3E%3Cpath d='M4 12L12 5l8 7v8H4z' fill='%23FFC53D'/%3E%3Crect x='10' y='14' width='4' height='6' fill='%231B2036'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Connection / waking screen -->
+  <div id="waking" class="waking show">
+    <div class="waking-card">
+      <div class="waking-house">
+        <svg viewBox="0 0 64 64" width="72" height="72"><path d="M8 30L32 10l24 20v26H8z" fill="#FFC53D" stroke="#1B2036" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" fill="#1B2036"/><g class="zz" fill="#9AD8F2" font-family="Fredoka" font-weight="700"><text x="44" y="12" font-size="12">z</text><text x="52" y="5" font-size="9">z</text></g></svg>
+      </div>
+      <h2 id="wakingTitle">Waking up the server…</h2>
+      <p id="wakingText">Free servers take a nap when nobody's playing. This can take up to a minute — hang tight!</p>
+      <div class="bar"><span></span></div>
+    </div>
+  </div>
+  <div id="netBanner" class="net-banner">Connection lost — reconnecting…</div>
+
+  <!-- Home -->
+  <section id="home" class="screen">
+    <div class="home-wrap">
+      <div class="home-logo">
+        <div class="logo-badge">
+          <svg viewBox="0 0 64 64" width="64" height="64"><path d="M8 30L32 10l24 20v26H8z" fill="#FFC53D" stroke="#FFF8EA" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" fill="#1B2036"/></svg>
+        </div>
+        <h1>TURF <span>TYCOON</span></h1>
+        <p class="tag">Buy · Build · Brag — with your friends</p>
+      </div>
+      <div class="home-card">
+        <label class="field">
+          <span>Your name</span>
+          <input id="nameInput" maxlength="16" autocomplete="nickname" placeholder="e.g. Barn">
+        </label>
+        <button id="createBtn" class="btn btn-primary btn-lg">Create a game</button>
+        <div class="divider"><span>or join a friend</span></div>
+        <div class="join-row">
+          <input id="codeInput" maxlength="5" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button id="joinBtn" class="btn btn-secondary btn-lg">Join</button>
+        </div>
+        <p id="homeError" class="error"></p>
+      </div>
+      <p class="fine">2–8 players · Share the 5-letter code with friends</p>
+    </div>
+  </section>
+
+  <!-- Lobby -->
+  <section id="lobby" class="screen hidden">
+    <div class="lobby-wrap">
+      <header class="lobby-head">
+        <div>
+          <div class="eyebrow">Lobby code</div>
+          <button id="codeBig" class="code-big" title="Copy invite link"></button>
+          <div class="hint" id="copyHint">Tap the code to copy an invite link</div>
+        </div>
+        <button id="leaveLobby" class="btn btn-ghost">Leave</button>
+      </header>
+      <div class="lobby-grid">
+        <div class="panel">
+          <h3>Players <span id="playerCount" class="muted"></span></h3>
+          <ul id="lobbyPlayers" class="lobby-players"></ul>
+        </div>
+        <div class="panel">
+          <h3>Your piece</h3>
+          <div class="preview-row">
+            <div id="myPreview" class="token-preview"></div>
+            <div class="muted small">Pick a piece and a color. No two players can match exactly.</div>
+          </div>
+          <div id="tokenPicker" class="token-picker"></div>
+          <div id="colorPicker" class="color-picker"></div>
+        </div>
+        <div class="panel">
+          <h3>House rules</h3>
+          <label class="switch-row">
+            <span>
+              <strong>Free Parking jackpot</strong>
+              <span class="muted small">Taxes and card fees go into a pot. Land on Free Parking to grab it all.</span>
+            </span>
+            <span class="switch"><input type="checkbox" id="fpToggle"><i></i></span>
+          </label>
+          <p id="rulesNote" class="muted small"></p>
+          <div class="lobby-actions">
+            <button id="readyBtn" class="btn btn-secondary btn-lg">I'm ready</button>
+            <button id="startBtn" class="btn btn-primary btn-lg">Start game</button>
+          </div>
+          <p id="lobbyStatus" class="muted small center"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Game -->
+  <section id="game" class="screen hidden">
+    <div class="game-layout">
+      <div class="board-wrap">
+        <svg id="board" class="board" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <aside class="side">
+        <div class="side-top">
+          <div class="brand-mini">TURF <span>TYCOON</span></div>
+          <div class="side-tools">
+            <span class="code-chip" id="codeChip"></span>
+            <button id="muteBtn" class="icon-btn" title="Sound on/off"></button>
+            <button id="rulesBtn" class="icon-btn" title="How to play">?</button>
+          </div>
+        </div>
+        <div id="turnCard" class="turn-card"></div>
+        <div id="players" class="players"></div>
+        <div class="side-buttons">
+          <button id="manageBtn" class="btn btn-ghost">🏠 My lots</button>
+          <button id="tradeBtn" class="btn btn-ghost">🤝 Trade</button>
+        </div>
+        <div id="tradeList" class="trade-list"></div>
+        <div class="log-wrap">
+          <div class="log-title">What's happened</div>
+          <ol id="log" class="log"></ol>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Modal root -->
+  <div id="modal" class="modal hidden"><div class="modal-backdrop"></div><div class="modal-box" id="modalBox"></div></div>
+  <div id="cardShow" class="card-show hidden"></div>
+  <div id="banner" class="banner hidden"></div>
+  <div id="toasts" class="toasts"></div>
+  <canvas id="confetti" class="confetti"></canvas>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="board.js"></script>
+  <script src="icons.js"></script>
+  <script src="sound.js"></script>
+  <script src="boardview.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
